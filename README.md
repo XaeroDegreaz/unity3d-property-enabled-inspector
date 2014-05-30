@@ -11,7 +11,7 @@ Secondly, simply mark any public property with the attribute `[InspectAttribute]
 If you wish to forego using the Inspect attribute on all of your properties, you may construct the `[EnablePropertyInspection]` attribute like so: 
 
 ```C#
-[EnablePropertyInspection( [InspectorPermissions].AllNonPrivate )]
+[EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
 ```
 
 If you wish to ignore a property, you may mark it with the attributes `[IgnoreAttribute]`, or `[HideInInspector]`.
