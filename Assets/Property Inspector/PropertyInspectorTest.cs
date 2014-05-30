@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using PropertyEnabledInspector;
 using UnityEngine;
 
 [Serializable]
 [SerializePrivateVariables]
-[EnablePropertyInspection]
+[EnablePropertyInspection(InspectionModes.AllNonPrivate)]
 public class PropertyInspectorTest : MonoBehaviour
 {
 	#region Private Backing Fields
@@ -19,45 +20,28 @@ public class PropertyInspectorTest : MonoBehaviour
 	/// This is setup like a public backing field for the SomeInt property 
 	/// to demonstrate it's working in the editor.
 	/// </summary>
-	public int SomeIntField;
-	public Vector4 Quat;
-	public GameObject[] TestArray;
+	private int _someIntField;
 
-	//# Will not be inspected.
-	public Dictionary<string, string> TestDict;
+	private Vector4 Quat;
+	private GameObject[] TestArray;
 
 	#endregion
 
 	#region Public Properties
-
-	[InspectorProperty( ExplicitBackingFieldName = "_testList" )]
+	[Inspect("_testList")]
 	public List<string> TestList
 	{
 		get { return _testList; }
 		set { _testList = value; }
 	}
 
-	[InspectorProperty]
 	public int SomeInt
 	{
-		get { return SomeIntField; }
-		set { SomeIntField = value; }
+		get { return _someIntField; }
+		set { _someIntField = value; }
 	}
 
-	[InspectorProperty]
 	public List<Transform> TestAutoList { get; set; }
-
-	[InspectorProperty]
-	public int SomeInt2 { get; set; }
-
-	[InspectorProperty]
-	public GameObject SomeGO { get; set; }
-
-	[InspectorProperty]
-	public Vector3 SomeVec { get; set; }
-
-	[InspectorProperty]
-	public bool HasRabies { get; set; }
 
 	#endregion
 }
