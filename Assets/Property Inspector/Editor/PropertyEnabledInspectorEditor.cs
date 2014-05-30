@@ -14,7 +14,7 @@ namespace PropertyEnabledInspector
 	/// see, and work with class properties the same way you can with class fields.
 	/// </summary>
 	/// <remarks>
-	/// This editor class makes available the inclusion of class properties inside the inspector.
+	/// High level overview:
 	/// 
 	/// First, mark your class with the <see cref="EnablePropertyInspectionAttribute"/>, and <see cref="SerializePrivateVariables"/> attributes. This will let the inspector know that it is
 	/// allowed to initialize on your MonoBehaviour. Because this editor enables properties to be inspected on ALL MonoBehaviour
@@ -24,7 +24,7 @@ namespace PropertyEnabledInspector
 	/// Secondly, simply mark any public property with the attribute <see cref="InspectAttribute"/>, and it will be shown in the inspector.
 	/// This will work with auto-properties as well as manually managed property accessors / backing fields.
 	/// 
-	/// If you wish to forego using the Inspect attribute on a all of your properties, you may construct the EnablePropertyInspection attrubute like so:
+	/// If you wish to forego using the Inspect attribute on all of your properties, you may construct the EnablePropertyInspection attribute like so:
 	/// <example>
 	/// <code>
 	/// [EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
