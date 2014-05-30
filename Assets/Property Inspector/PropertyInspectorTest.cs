@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using PropertyEnabledInspector;
 using UnityEngine;
 
-[Serializable]
 [SerializePrivateVariables]
-[EnablePropertyInspection(InspectionModes.AllNonPrivate)]
+[EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
 public class PropertyInspectorTest : MonoBehaviour
 {
 	#region Private Backing Fields
@@ -28,7 +27,8 @@ public class PropertyInspectorTest : MonoBehaviour
 	#endregion
 
 	#region Public Properties
-	[Inspect("_testList")]
+
+	[Inspect( "_testList" )]
 	public List<string> TestList
 	{
 		get { return _testList; }
@@ -40,6 +40,11 @@ public class PropertyInspectorTest : MonoBehaviour
 		get { return _someIntField; }
 		set { _someIntField = value; }
 	}
+
+	public bool IsDead { get; set; }
+
+	[Ignore]
+	public bool IsIgnore { get; set; }
 
 	public List<Transform> TestAutoList { get; set; }
 

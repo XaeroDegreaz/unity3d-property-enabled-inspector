@@ -10,14 +10,28 @@ using Object = UnityEngine.Object;
 namespace PropertyEnabledInspector
 {
 	/// <summary>
+	/// This is a drop-in replacement of the Unity3D editor inspector that adds the ability to
+	/// see, and work with class properties the same way you can with class fields.
+	/// </summary>
+	/// <remarks>
 	/// This editor class makes available the inclusion of class properties inside the inspector.
 	/// 
 	/// First, mark your class with the <see cref="EnablePropertyInspectionAttribute"/>, and <see cref="SerializePrivateVariables"/> attributes. This will let the inspector know that it is
 	/// allowed to initialize on your MonoBehaviour. Because this editor enables properties to be inspected on ALL MonoBehaviour
 	/// derived classes, this is important (this way you have control over whether or not this is the default editor inspector for all MonoBehaviours).
 	/// 
+	/// 
 	/// Secondly, simply mark any public property with the attribute <see cref="InspectAttribute"/>, and it will be shown in the inspector.
 	/// This will work with auto-properties as well as manually managed property accessors / backing fields.
+	/// 
+	/// If you wish to forego using the Inspect attribute on a all of your properties, you may construct the EnablePropertyInspection attrubute like so:
+	/// <example>
+	/// <code>
+	/// [EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
+	/// </code>
+	/// </example>
+	/// 
+	/// If you wish to ignore a property, you may mark it with the attributes <see cref="IgnoreAttribute"/>, or <see cref="HideInInspector"/>.
 	/// 
 	/// It is important that you mark your target class with with the <see cref="SerializePrivateVariables"/> attributes if you want to work
 	/// with auto properties.
@@ -25,17 +39,22 @@ namespace PropertyEnabledInspector
 	/// If you wish to explicitly name a backing field to use for a property, you may do so by setting the ExplicitBackingFieldName
 	/// property of the <see cref="InspectAttribute"/> attribute, like so:
 	/// <example>
-	/// [InspectorProperty("_myBackingFieldName")]
+	/// <code>
+	/// [Inspect( "_myBackingFieldName" )]
+	/// </code>
 	/// </example>
 	/// 
 	/// or
 	/// <example>
-	/// [InspectorProperty(ExplicitBackingFieldName = "myBackingFieldName")]
+	/// <code>
+	/// [Inspect( ExplicitBackingFieldName = "myBackingFieldName" )]
+	/// </code>
 	/// </example>
+	/// 
 	/// 
 	/// If you're going to expose Array, or List *properties* in the inspector, you *MUST* use one of the above methods to name your backing field
 	/// if you're not going to use an auto-property.
-	/// </summary>
+	/// </remarks>
 	[CustomEditor( typeof ( MonoBehaviour ), true )]
 	public class PropertyEnabledInspectorEditor : Editor
 	{
@@ -57,7 +76,9 @@ namespace PropertyEnabledInspector
 				return;
 			}
 
+#pragma warning disable 618
 			var privateVariablesAttribute = attributes.FirstOrDefault( a => a is SerializePrivateVariables ) as SerializePrivateVariables;
+#pragma warning restore 618
 
 			if ( privateVariablesAttribute == null )
 			{
@@ -83,7 +104,7 @@ namespace PropertyEnabledInspector
 												 predicateForAttribute<HideInInspector>( property, 0 ) &&
 												 ( property.DeclaringType == target.GetType() || predicateForAttribute<InspectAttribute>( property ) ) );
 
-			if ( permissionAttribute.InspectionMode == InspectionModes.Selective )
+			if ( permissionAttribute.InspectorPermission == InspectorPermissions.Selective )
 			{
 				properties = properties.Where( property => predicateForAttribute<InspectAttribute>( property ) );
 			}
@@ -218,8 +239,11 @@ namespace PropertyEnabledInspector
 				}
 
 				EditorGUI.BeginChangeCheck();
+				serializedObject.Update();
 
 				var result = EditorGUILayout.PropertyField( serializedObject.FindProperty( fieldName ), new GUIContent( niceName ), true );
+
+				registerUndo( member );
 
 				if ( EditorGUI.EndChangeCheck() )
 				{
@@ -272,6 +296,9 @@ namespace PropertyEnabledInspector
 				return;
 			}
 
+			serializedObject.Update();
+			registerUndo( member );
+
 			//# If we get this far, they are different; go ahead and assign gui to member.
 			if ( isFieldInfo )
 			{
@@ -280,6 +307,13 @@ namespace PropertyEnabledInspector
 			{
 				( (PropertyInfo) member ).SetValue( target, guiValue, null );
 			}
+
+			serializedObject.ApplyModifiedProperties();
+		}
+
+		private void registerUndo( MemberInfo member )
+		{
+			Undo.RecordObject( target, string.Format( "Inspector ({0}=>{1}.{2})", target.name, member.DeclaringType, member.Name ) );
 		}
 
 		private string getAutoBackingFieldName( string propertyName )
