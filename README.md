@@ -4,9 +4,9 @@ This is a drop-in replacement of the Unity3D editor inspector that adds the abil
 
 High level overview:
 
-First, mark your class with the `[EnablePropertyInspectionAttribute]` and `[SerializePrivateVariables]` attributes. This will let the inspector know that it is allowed to initialize on your `MonoBehaviour`. Because this editor enables properties to be inspected on ALL `MonoBehaviour` derived classes, this is important (this way you have control over whether or not this is the default editor inspector for all MonoBehaviours).
+First, mark your class with the `[EnablePropertyInspection]` and `[SerializePrivateVariables]` attributes. This will let the inspector know that it is allowed to initialize on your `MonoBehaviour`. Because this editor enables properties to be inspected on ALL `MonoBehaviour` derived classes, this is important (this way you have control over whether or not this is the default editor inspector for all MonoBehaviours).
 
-Secondly, simply mark any public property with the attribute `[InspectAttribute]`, and it will be shown in the inspector. This will work with auto-properties as well as manually managed property accessors / backing fields.
+Secondly, simply mark any public property with the attribute `[Inspect]`, and it will be shown in the inspector. This will work with auto-properties as well as manually managed property accessors / backing fields.
 
 If you wish to forego using the Inspect attribute on all of your properties, you may construct the `[EnablePropertyInspection]` attribute like so: 
 
@@ -14,11 +14,11 @@ If you wish to forego using the Inspect attribute on all of your properties, you
 [EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
 ```
 
-If you wish to ignore a property, you may mark it with the attributes `[IgnoreAttribute]`, or `[HideInInspector]`.
+If you wish to ignore a property, you may mark it with the attributes `[Ignore]`, or `[HideInInspector]`.
 
 It is important that you mark your target class with with the `[SerializePrivateVariables]` attributes if you want to work with auto properties.
 
-If you wish to explicitly name a backing field to use for a property, you may do so by setting the `ExplicitBackingFieldName` property of the `[InspectAttribute]` attribute, like so:
+If you wish to explicitly name a backing field to use for a property, you may do so by setting the `ExplicitBackingFieldName` property of the `[Inspect]` attribute, like so:
 
 ```C#
 [Inspect( "_myBackingFieldName")]
