@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PropertyEnabledInspector;
 using UnityEngine;
 
 [SerializePrivateVariables]
-[EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
-public class PropertyInspectorTest : MonoBehaviour
+[EnablePropertyInspection]
+public class PropertyInspectorTest2 : MonoBehaviour
 {
 	#region Private Backing Fields
 
@@ -17,19 +16,8 @@ public class PropertyInspectorTest : MonoBehaviour
 	/// </summary>
 	private int _someIntField;
 
-	[NonSerialized]
-	private string _anotherIgnore;
-
 	#endregion
 
-	#region Private Instance Fields
-
-	//# Because of [SerializePrivateVariables], you should manually mark the private
-	//# fields that you do not want to be serialized.
-	[NonSerialized]
-	private string _doNotSerializeMe;
-
-	#endregion
 
 	#region Public Instance Fields
 
@@ -49,29 +37,22 @@ public class PropertyInspectorTest : MonoBehaviour
 	}
 
 	//# Arrays, and Lists that are auto-properties are no problem.
+	[Inspect]
 	public List<Transform> TestAutoList { get; set; }
 
-	//# No Inspect attribute needed because of [EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
+	//# Will not show up without Inspect attribute.
 	public int SomeInt
 	{
 		get { return _someIntField; }
 		set { _someIntField = value; }
 	}
 
-	//# Auto-properties are no problem.
+	//# Will not show up without Inspect attribute.
 	public bool IsDead { get; set; }
 
-	//# As the attribute implies, this property will not be shown in inspector.
+	//# Will not show up without Inspect attribute (Ignore is redundant).
 	[Ignore]
 	public bool IsIgnore { get; set; }
-
-	//# Set this property to ignore, and also mark its backing field as NonSerialized
-	[Ignore]
-	public string AnotherIgnore
-	{
-		get { return _anotherIgnore; }
-		set { _anotherIgnore = value; }
-	}
 
 	#endregion
 }
