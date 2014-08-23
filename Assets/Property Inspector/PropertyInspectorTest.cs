@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using PropertyEnabledInspector;
 using UnityEngine;
 
+#pragma warning disable 618
 [SerializePrivateVariables]
+#pragma warning restore 618
 [EnablePropertyInspection( InspectorPermissions.AllNonPrivate )]
 public class PropertyInspectorTest : MonoBehaviour
 {

@@ -2,7 +2,9 @@
 using PropertyEnabledInspector;
 using UnityEngine;
 
+#pragma warning disable 618
 [SerializePrivateVariables]
+#pragma warning restore 618
 [EnablePropertyInspection]
 public class PropertyInspectorTest2 : MonoBehaviour
 {
